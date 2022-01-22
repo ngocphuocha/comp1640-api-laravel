@@ -3,8 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,10 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         \App\Models\User::factory(10)->create();
-         $role = Role::create(['name' => 'writer']);
-
-        $permission = Permission::create(['name' => 'edit articles']);
-        $role->givePermissionTo($permission);
+        //\App\Models\User::factory(10)->create();
+        $this->call([
+            RolesAndPermissionsSeeder::class,
+            UserSeeder::class,
+        ]);
     }
 }
