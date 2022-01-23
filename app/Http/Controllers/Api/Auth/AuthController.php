@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\UserLoginRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -24,7 +24,7 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user,
         ];
-        return response()->json($response, 201);
+        return response()->json($response, 200);
 
     }
 
@@ -32,7 +32,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out', 201]);
+        return response()->json( 'Logout success', 200);
     }
 
 }
