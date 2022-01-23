@@ -15,7 +15,6 @@ class UserSeeder extends Seeder
     public function run()
     {
         $superAdmin = User::create([
-            'name' => 'tao la super admin',
             'email' => 'superadmin@gmail.com',
             'password' => bcrypt('superadmin@gmail.com'),
         ]);

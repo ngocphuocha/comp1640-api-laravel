@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(UserLoginRequest $request): \Illuminate\Http\JsonResponse
+    public function login(UserLoginRequest $request)
     {
         // check email
         $user = User::where('email', $request->input('email'))->first();
