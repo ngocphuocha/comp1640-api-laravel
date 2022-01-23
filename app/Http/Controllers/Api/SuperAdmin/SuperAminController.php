@@ -6,15 +6,43 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\SuperAdmin\CreateUserRequest;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class SuperAminController extends Controller
 {
-    //TODO make super admin middleware check is super admin
+    /**
+     * Get list users
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getListUsers(Request $request)
+    {
+        $adminRoleId = Role::findByName('super admin', 'web')->id;
+
+        // Get list with query role id, but not included Admin role
+        if ($request->has('roleId')) {
+            $listOfId = DB::table('model_has_roles')
+                ->where('model_type', 'App\Models\User')
+                ->where('role_id', '!=', $adminRoleId) //make sure prevent admin role
+                ->where('role_id', $request->input('roleId'))
+                ->pluck('model_id');
+        } else {
+            // Default return all users except admin role
+            $listOfId = DB::table('model_has_roles')
+                ->where('model_type', 'App\Models\User')
+                ->where('role_id', '!=', $adminRoleId)
+                ->pluck('model_id');
+        }
+
+        return response()->json(User::whereIn('id', $listOfId)->paginate(5), 200);
+
+    }
+
     public function createUser(CreateUserRequest $request)
     {
-//        dd('123');
         DB::beginTransaction();
 
         try {
@@ -24,18 +52,18 @@ class SuperAminController extends Controller
             $role_id = $request->input('role_id'); //get role id field
             $permissions = Role::findById($role_id, 'web')->permissions; // get all persmissions with role id
 
-            $dataPermisstions = [];
+            $dataPermissions = [];
 
             // Get only permission name
             foreach ($permissions->toArray() as $key => $val) {
-            $dataPermisstions[$key] = $val['name'];
+                $dataPermissions[$key] = $val['name'];
             }
 
             $userProfile = $request->only(['name', 'gender', 'phone_number', 'address']);
 
             $user = User::create($fields); // create user
             $user->assignRole($role_id); // assign role for user
-            $user->givePermissionTo($dataPermisstions); // give array permissions to this user
+            $user->givePermissionTo($dataPermissions); // give array permissions to this user
             $user->profile()->create($userProfile); // create profile's user
 
             DB::commit();
