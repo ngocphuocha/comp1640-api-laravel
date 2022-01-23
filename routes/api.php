@@ -18,6 +18,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/users/{id}/permissions', [\App\Http\Controllers\UserController::class,'givePermissionToUser'])->middleware('auth:sanctum');
+Route::post('/users/{id}/permissions', [\App\Http\Controllers\UserController::class,'givePermissionToUser'])->middleware(['auth:sanctum', 'auth:super-admin']);
 
 Route::post('/login',[\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
+
+Route::post('/super-admins/users', [\App\Http\Controllers\Api\SuperAdmin\SuperAminController::class, 'createUser'])->middleware(['auth:sanctum', 'is.admin']);

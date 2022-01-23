@@ -20,6 +20,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $superAdminRole = Role::create(['name' => 'super admin']);
         Permission::create(['name' => 'users'])->assignRole($superAdminRole);
+        Permission::create(['name' => 'all'])->assignRole($superAdminRole);
 
         $qaManagerRole = Role::create(['name'=> 'quality assurance manager']);
         Permission::create(['name'=>'categories'])->assignRole($qaManagerRole);
