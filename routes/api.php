@@ -24,4 +24,4 @@ Route::post('/login',[\App\Http\Controllers\Api\Auth\AuthController::class, 'log
 
 Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::post('/super-admins/users', [\App\Http\Controllers\Api\SuperAdmin\SuperAminController::class, 'createUser'])->middleware(['auth:sanctum', 'is.admin']);
+

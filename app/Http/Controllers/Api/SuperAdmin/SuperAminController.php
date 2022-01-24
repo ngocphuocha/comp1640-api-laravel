@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\SuperAdmin\CreateUserRequest;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -37,10 +36,39 @@ class SuperAminController extends Controller
                 ->pluck('model_id');
         }
 
-        return response()->json(User::whereIn('id', $listOfId)->paginate(5), 200);
+        try {
+            $user = User::whereIn('id', $listOfId)->paginate(5);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
+        return response()->json($user, 200);
 
     }
 
+    /**
+     * Get detail info of users
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUsersInfo($id)
+    {
+        $adminRoleId = Role::findByName('super admin', 'web')->id; // Get admin role id
+
+        try {
+            $user = User::with(['roles', 'permissions'])->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
+        return response()->json($user, 200);
+    }
+
+    /**
+     * Admin create new user for system
+     *
+     * @param CreateUserRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function createUser(CreateUserRequest $request)
     {
         DB::beginTransaction();
