@@ -20,5 +20,13 @@ class UserSeeder extends Seeder
         ]);
         $superAdmin->assignRole('super admin');
         $superAdmin->givePermissionTo('users');
+
+        $qaManager = User::create([
+            'email' => 'qamanager@gmail.com',
+            'password' => bcrypt('qamanager@gmail.com'),
+        ]);
+        $qaManager->assignRole('quality assurance manager');
+        $qaManager->givePermissionTo('categories');
+
     }
 }

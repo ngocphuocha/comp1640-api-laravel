@@ -18,6 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Authentication
 Route::post('/users/{id}/permissions', [\App\Http\Controllers\UserController::class,'givePermissionToUser'])->middleware(['auth:sanctum', 'auth:super-admin']);
 
 Route::post('/login',[\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
@@ -25,3 +26,6 @@ Route::post('/login',[\App\Http\Controllers\Api\Auth\AuthController::class, 'log
 Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 
+// Categories
+
+Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::class, 'index']);

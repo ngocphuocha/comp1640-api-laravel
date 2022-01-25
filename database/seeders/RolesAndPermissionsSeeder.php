@@ -24,6 +24,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $qaManagerRole = Role::create(['name'=> 'quality assurance manager']);
         Permission::create(['name'=>'categories'])->assignRole($qaManagerRole);
+
         $QACoordinatorRole = Role::create(['name' => 'QA coordinator']);
         Permission::create(['name' => 'staffs'])->assignRole($QACoordinatorRole);
 
