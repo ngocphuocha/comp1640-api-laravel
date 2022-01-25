@@ -98,7 +98,7 @@ class SuperAminController extends Controller
 
             $message = 'Register successfully';
             return response()->json(['success' => $message], 201);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             $message = $e->getMessage();
         }
