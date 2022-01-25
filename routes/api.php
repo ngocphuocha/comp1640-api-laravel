@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Authentication
-Route::post('/users/{id}/permissions', [\App\Http\Controllers\UserController::class,'givePermissionToUser'])->middleware(['auth:sanctum', 'auth:super-admin']);
+
 
 Route::post('/login',[\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
 
