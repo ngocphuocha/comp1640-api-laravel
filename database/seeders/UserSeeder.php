@@ -28,5 +28,22 @@ class UserSeeder extends Seeder
         $qaManager->assignRole('quality assurance manager');
         $qaManager->givePermissionTo('categories');
 
+        $QACoordinatorRole = User::create([
+            'email' => 'qac@gmail.com',
+            'password' => bcrypt('qac@gmail.com'),
+            'department_id' => 1,
+        ]);
+        $QACoordinatorRole->assignRole('QA coordinator');
+        $QACoordinatorRole->givePermissionTo('staffs');
+
+        $staff = User::create([
+            'email' => 'staff@gmail.com',
+            'password' => bcrypt('staff@gmail.com'),
+            'department_id' => 1
+        ]);
+        $staff->assignRole('staff');
+        $staff->givePermissionTo('ideas');
+
+
     }
 }
