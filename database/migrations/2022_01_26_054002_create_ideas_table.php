@@ -18,10 +18,10 @@ class CreateIdeasTable extends Migration
             $table->string('title');
             $table->string('content');
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('comment_id')->constrained();
             $table->foreignId('category_id')->constrained();
+            $table->foreignId('department_id')->constrained();
             $table->boolean('is_active')->default(false);
-
+            $table->boolean('is_hidden')->default(false);
             $table->timestamps();
         });
     }

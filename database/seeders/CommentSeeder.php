@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Idea;
+use App\Models\Comment;
 use Illuminate\Database\Seeder;
 
-class IdeaSeeder extends Seeder
+class CommentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class IdeaSeeder extends Seeder
      */
     public function run()
     {
-        Idea::factory(100)->create();
+       Comment::factory(200)->create();
     }
 }
