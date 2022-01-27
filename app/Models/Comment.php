@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Idea extends Model
+class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title', 'content', 'user_id', 'category_id', 'is_active', 'is_hidden'
-    ];
+    protected $fillable = ['content', 'user_id', 'idea_id'];
 
-    /**
-     * Get the user that owns the idea.
-     */
+    public function idea()
+    {
+        return $this->belongsTo(Idea::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

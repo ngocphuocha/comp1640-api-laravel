@@ -51,4 +51,17 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
+
+    /*
+     * Get the ideas for the user.
+     */
+    public function ideas()
+    {
+        return $this->hasMany(Idea::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
