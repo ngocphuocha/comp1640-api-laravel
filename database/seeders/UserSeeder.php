@@ -36,6 +36,7 @@ class UserSeeder extends Seeder
         $QACoordinatorRole->assignRole('QA coordinator');
         $QACoordinatorRole->givePermissionTo(['staffs']);
 
+
         $staff = User::create([
             'email' => 'staff@gmail.com',
             'password' => bcrypt('staff@gmail.com'),
