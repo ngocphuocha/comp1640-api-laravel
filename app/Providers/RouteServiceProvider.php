@@ -56,6 +56,11 @@ class RouteServiceProvider extends ServiceProvider
             Route::prefix('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api/qa_managers/qa_managers.php'));
+
+            // Staff api route
+            Route::prefix('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api/staffs/staffs.php'));
         });
     }
 

@@ -19,14 +19,14 @@ class UserSeeder extends Seeder
             'password' => bcrypt('superadmin@gmail.com'),
         ]);
         $superAdmin->assignRole('super admin');
-        $superAdmin->givePermissionTo('users');
+        $superAdmin->givePermissionTo(['users.create', 'users.show', 'users.edit', 'users.delete']);
 
         $qaManager = User::create([
             'email' => 'qamanager@gmail.com',
             'password' => bcrypt('qamanager@gmail.com'),
         ]);
         $qaManager->assignRole('quality assurance manager');
-        $qaManager->givePermissionTo('categories');
+        $qaManager->givePermissionTo(['categories.create', 'categories.show', 'categories.edit', 'categories.delete']);
 
         $QACoordinatorRole = User::create([
             'email' => 'qac@gmail.com',
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
             'department_id' => 1,
         ]);
         $QACoordinatorRole->assignRole('QA coordinator');
-        $QACoordinatorRole->givePermissionTo('staffs');
+        $QACoordinatorRole->givePermissionTo(['staffs']);
 
         $staff = User::create([
             'email' => 'staff@gmail.com',
@@ -42,8 +42,6 @@ class UserSeeder extends Seeder
             'department_id' => 1
         ]);
         $staff->assignRole('staff');
-        $staff->givePermissionTo('ideas');
-
-
+        $staff->givePermissionTo(['ideas.create', 'ideas.show', 'ideas.edit', 'ideas.delete']);
     }
 }
