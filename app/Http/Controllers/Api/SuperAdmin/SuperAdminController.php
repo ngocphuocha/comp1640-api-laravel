@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
-class SuperAminController extends Controller
+class SuperAdminController extends Controller
 {
     /**
      * Get list users

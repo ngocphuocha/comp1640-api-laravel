@@ -10,7 +10,7 @@ class Idea extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'content', 'user_id', 'category_id', 'is_active', 'is_hidden'
+        'title', 'department_id', 'content', 'user_id', 'category_id', 'is_active', 'is_hidden'
     ];
 
     /**
