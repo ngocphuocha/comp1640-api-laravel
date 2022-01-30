@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api\Staff;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessSendMailNotificationNewIdea;
 use App\Models\Idea;
+use App\Models\User;
+use App\Notifications\NotifyNewPostToAllUsers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 
@@ -30,6 +33,14 @@ class StaffController extends Controller
                 return response()->json($e->getMessage(), 409);
             }
             // If success
+            $users = User::all();
+            $data = [
+                "body" => "A new ideas have been upload by user $currentUser->email",
+                "url" => url("api/ideas/$idea->id"),
+            ];
+            // Send notification using queue job
+            dispatch(new ProcessSendMailNotificationNewIdea($data));
+
             return response()->json('Post idea success', 201);
         }
 
