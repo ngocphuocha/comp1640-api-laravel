@@ -20,17 +20,18 @@ Mail: phuoctn412@gmail.com
 
 Phone: 0984641362
 
-# Do this after you clone my project
+#IMPORTANT: You must do this after you clone my project
 
 1. Open your terminal in project directory
 2. Make .env file:
    `
    cp .env.example .env
    `
-3. Run composer install:
+3. Run composer install to install dependency:
    `
    composer install
    `
+
    If you not install composer, click here to read document of composer here [Composer](https://getcomposer.org)
 4. Generate key for run this application
    `
@@ -43,3 +44,6 @@ Phone: 0984641362
 6. User account in project
    `Email: superadmin@gmail.com, Password: superadmin@gmail.com
    `
+7. Run queue job for sending email
+
+   Open another terminal and enter: `php artisan queue:listen`

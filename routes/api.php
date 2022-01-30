@@ -29,3 +29,6 @@ Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'l
 // Categories
 
 Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::class, 'index']);
+
+// Ideas
+Route::get('/ideas/{id}', [\App\Http\Controllers\Api\Public\IdeaController::class, 'show']);
