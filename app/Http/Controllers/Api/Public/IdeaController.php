@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Storage;
 class IdeaController extends Controller
 {
     /**
+     * Display the all resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param int $id
