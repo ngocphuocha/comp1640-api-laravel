@@ -31,5 +31,13 @@ Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'l
 Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::class, 'index']);
 
 // Ideas
-Route::get('/ideas/{id}', [\App\Http\Controllers\Api\Public\IdeaController::class, 'show']);
-Route::get('/ideas/{id}/download', [\App\Http\Controllers\Api\Public\IdeaController::class, 'downloadIdeaAsPDF']);
+Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
+    Route::get('/ideas/{id}', 'show');
+    Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF');
+});
+
+// Comments
+Route::controller(\App\Http\Controllers\Api\Comments\CommentController::class)->group(function () {
+    Route::get('/ideas/{idea}/comments', 'index');
+    Route::post('/ideas/{idea}/comments', 'store')->middleware(['auth:sanctum']);
+});

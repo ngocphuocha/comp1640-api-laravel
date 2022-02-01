@@ -45,7 +45,7 @@ class StaffController extends Controller
                     $data['file_id'] = $newFile->id;
                 }
                 $idea = Idea::create($data);
-//                dd($idea);
+
                 // create permission to edit and delete later access
                 Permission::create(['guard_name' => 'web', 'name' => "idea.edit.$idea->id"]);
                 Permission::create(['guard_name' => 'web', 'name' => "idea.delete.$idea->id"]);
@@ -58,7 +58,7 @@ class StaffController extends Controller
                 "url" => url("api/ideas/$idea->id"),
             ];
 
-            // Send notification using queue job
+            // Send notification via queue job
             dispatch(new ProcessSendMailNotificationNewIdea($data));
 
             return response()->json('Post idea success', 201);
