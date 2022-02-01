@@ -43,7 +43,6 @@ class User extends Authenticatable
     ];
 
 
-
     /**
      * Get the profile associated with the user.
      */
