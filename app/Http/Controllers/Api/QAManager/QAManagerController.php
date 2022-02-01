@@ -58,7 +58,6 @@ class QAManagerController extends Controller
     public function updateUserPermissions($id, Request $request)
     {
         // TODO: Nhớ làm cái này bên frontend là multiple select option, chỉ lấy mấy thằng staff và qa của mỗi department
-        // TODO: Nhớ làm middleware cho role qa manager
         // Get list permission from request of user
         $permissions = DB::table('permissions')
             ->whereIn('id', [2])
