@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Authentication
 
 
-Route::post('/login',[\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
+Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
 
 Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum');
 
@@ -32,3 +32,4 @@ Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::
 
 // Ideas
 Route::get('/ideas/{id}', [\App\Http\Controllers\Api\Public\IdeaController::class, 'show']);
+Route::get('/ideas/{id}/download', [\App\Http\Controllers\Api\Public\IdeaController::class, 'downloadIdeaAsPDF']);

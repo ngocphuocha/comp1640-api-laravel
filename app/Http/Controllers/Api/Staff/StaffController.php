@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\Staff;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Staff\StoreIdeaRequest;
 use App\Jobs\ProcessSendMailNotificationNewIdea;
 use App\Models\Idea;
-use App\Models\User;
-use App\Notifications\NotifyNewPostToAllUsers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Smalot\PdfParser\Parser;
+use App\Models\File;
+use Illuminate\Support\Facades\Storage;
 
 class StaffController extends Controller
 {
@@ -18,26 +20,44 @@ class StaffController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function postIdea(Request $request)
+    public function postIdea(StoreIdeaRequest $request, Parser $parser)
     {
-//        TODO:: them send email thong bao toan bo cho user trong he thong khi post mot idea
         $currentUser = $request->user();
 
         // Check permission create idea of this staff
         if ($currentUser->hasPermissionTo('ideas.create', 'web')) {
             try {
-                $idea = Idea::create($request->only(['title', 'content', 'user_id', 'category_id', 'department_id', 'is_hidden']));
+                $data = $request->only(['title', 'content', 'user_id', 'category_id', 'department_id', 'is_hidden']);
 
+                if ($request->hasFile('file')) {
+                    $file = $request->file('file');
+                    $content = $parser->parseFile($file->path())->getText();
+                    $path = $request->file('file')->store('ideas');
+                    $newFile = File::create([
+                        'name' => $file->hashName(),
+                        'type' => $file->getMimeType(),
+                        'size' => $file->getSize(),
+                        'path' => $path
+                    ]);
+
+                    // Change data content if user choose post idea vie pdf file
+                    $data['content'] = $content;
+                    $data['file_id'] = $newFile->id;
+                }
+                $idea = Idea::create($data);
+//                dd($idea);
+                // create permission to edit and delete later access
                 Permission::create(['guard_name' => 'web', 'name' => "idea.edit.$idea->id"]);
+                Permission::create(['guard_name' => 'web', 'name' => "idea.delete.$idea->id"]);
             } catch (\Exception $e) {
                 return response()->json($e->getMessage(), 409);
             }
-            // If success
-            $users = User::all();
+
             $data = [
                 "body" => "A new ideas have been upload by user $currentUser->email",
                 "url" => url("api/ideas/$idea->id"),
             ];
+
             // Send notification using queue job
             dispatch(new ProcessSendMailNotificationNewIdea($data));
 
@@ -46,5 +66,10 @@ class StaffController extends Controller
 
         // If fail
         return response()->json('You have been remove permission to create a ideas', '403');
+    }
+
+    public function postIdeaWithFile(Request $request)
+    {
+
     }
 }
