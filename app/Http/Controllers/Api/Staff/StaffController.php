@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Smalot\PdfParser\Parser;
 use App\Models\File;
-use Illuminate\Support\Facades\Storage;
 
 class StaffController extends Controller
 {
@@ -32,7 +31,7 @@ class StaffController extends Controller
                 if ($request->hasFile('file')) {
                     $file = $request->file('file');
                     $content = $parser->parseFile($file->path())->getText();
-                    $path = $request->file('file')->store('ideas');
+                    $path = $request->file('file')->store('ideas'); // store idea pdf to storage idea folder
                     $newFile = File::create([
                         'name' => $file->hashName(),
                         'type' => $file->getMimeType(),
@@ -68,8 +67,4 @@ class StaffController extends Controller
         return response()->json('You have been remove permission to create a ideas', '403');
     }
 
-    public function postIdeaWithFile(Request $request)
-    {
-
-    }
 }

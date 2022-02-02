@@ -33,7 +33,10 @@ Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::
 // Ideas
 Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
     Route::get('/ideas/{id}', 'show');
-    Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF');
+    Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF'); // download pdf idea
+    Route::get('/ideas/{idea}/likes', 'getTotalLikeOfIdea');
+    Route::post('/ideas/{idea}/likes', 'likeIdea')->middleware(['auth:sanctum']); // Like idea
+    Route::delete('/ideas/{idea}/likes', 'unlikeIdea')->middleware(['auth:sanctum']); // delete like idea
 });
 
 // Comments
