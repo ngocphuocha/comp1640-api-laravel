@@ -20,7 +20,7 @@ Mail: phuoctn412@gmail.com
 
 Phone: 0984641362
 
-#IMPORTANT: You must do this after you clone my project
+# IMPORTANT: You must do this after you clone my project
 
 1. Open your terminal in project directory
 2. Make .env file:
@@ -47,3 +47,8 @@ Phone: 0984641362
 7. Run queue job for sending email
 
    Open another terminal and enter: `php artisan queue:listen`
+8. Add ENV Variable into `.env` file for working api request from reactjs
+
+   `SESSION_DOMAIN=localhost`
+
+   `SANCTUM_STATEFUL_DOMAINS=localhost`
