@@ -32,6 +32,7 @@ Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::
 
 // Ideas
 Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
+    Route::get('/ideas', 'index');
     Route::get('/ideas/{id}', 'show');
     Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF'); // download pdf idea
     Route::get('/ideas/{idea}/likes', 'getTotalLikeOfIdea');

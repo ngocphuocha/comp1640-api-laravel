@@ -19,7 +19,12 @@ class IdeaController extends Controller
      */
     public function index()
     {
-
+        try {
+            $ideas = Idea::paginate(5);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 404);
+        }
+        return response()->json($ideas, 200);
     }
 
 
