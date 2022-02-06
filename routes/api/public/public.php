@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['throttle:global'])->get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::class, 'index']);
 
 // Ideas
-Route::middleware(['throttle:global'])->controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
+Route::middleware(['throttle:global', 'api'])->controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
     Route::get('/ideas', 'index');
     Route::get('/ideas/{id}', 'show');
     Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF'); // download pdf idea
-    Route::get('/ideas/{idea}/likes', 'getTotalLikeOfIdea');
-    Route::post('/ideas/{idea}/likes', 'likeIdea')->middleware(['auth:sanctum', 'api']); // Like idea
-    Route::delete('/ideas/{idea}/likes', 'unlikeIdea')->middleware(['auth:sanctum', 'api']); // delete like idea
+    Route::get('/ideas/{idea}/likes', 'getTotalLikeOfIdea'); // get all like idea
+    Route::post('/ideas/{idea}/likes', 'likeIdea')->middleware(['auth:sanctum']); // Like idea
+    Route::delete('/ideas/{idea}/likes', 'unlikeIdea')->middleware(['auth:sanctum']); // delete like idea
 });
 // Comments
 Route::middleware(['throttle:global'])->controller(\App\Http\Controllers\Api\Comments\CommentController::class)->group(function () {

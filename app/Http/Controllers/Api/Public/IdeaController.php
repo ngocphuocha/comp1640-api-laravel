@@ -93,7 +93,6 @@ class IdeaController extends Controller
      */
     public function likeIdea(Request $request, Idea $idea)
     {
-        dd($idea->toArray());
         try {
             if ($this->checkLikeIdeaIsExist($idea->id, $request) === false) {
                 IdeaLike::create([
