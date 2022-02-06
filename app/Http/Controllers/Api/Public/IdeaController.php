@@ -20,7 +20,7 @@ class IdeaController extends Controller
     public function index()
     {
         try {
-            $ideas = Idea::where('is_hidden', '=', false)->paginate(5);
+            $ideas = Idea::with(['category','department'])->where('is_hidden', '=', false)->paginate(5);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
@@ -46,9 +46,9 @@ class IdeaController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(Idea::findOrFail($id), 200);
-        } catch (\Exception) {
-            return response()->json('Resource not found', 404);
+            return response()->json(Idea::with(['user', 'department'])->findOrFail($id), 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
         }
     }
 
@@ -91,8 +91,9 @@ class IdeaController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function likeIdea(Idea $idea, Request $request)
+    public function likeIdea(Request $request, Idea $idea)
     {
+        dd($idea->toArray());
         try {
             if ($this->checkLikeIdeaIsExist($idea->id, $request) === false) {
                 IdeaLike::create([

@@ -61,6 +61,11 @@ class RouteServiceProvider extends ServiceProvider
             Route::prefix('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api/staffs/staffs.php'));
+
+            // Public api route
+            Route::prefix('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api/public/public.php'));
         });
     }
 
@@ -73,6 +78,11 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        // For pubic api
+        RateLimiter::for('global', function (Request $request) {
+            return Limit::none();
         });
     }
 }
