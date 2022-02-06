@@ -20,7 +20,7 @@ class IdeaController extends Controller
     public function index()
     {
         try {
-            $ideas = Idea::paginate(5);
+            $ideas = Idea::where('is_hidden', '=', false)->paginate(5);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
