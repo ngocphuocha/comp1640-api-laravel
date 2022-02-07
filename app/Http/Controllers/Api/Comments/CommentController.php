@@ -17,7 +17,7 @@ class CommentController extends Controller
     public function index(Idea $idea)
     {
         try {
-            $comments = Comment::where('idea_id', $idea->id)->get();
+            $comments = Comment::with('user')->where('idea_id', $idea->id)->get();
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
@@ -39,7 +39,7 @@ class CommentController extends Controller
                 'idea_id' => $idea->id,
             ]);
         } catch (\Exception $exception) {
-            return response()->json('Failed to post a comment', 409);
+            return response()->json($exception->getMessage(), 409);
         }
 
         return response()->json('Post comment success', 201);

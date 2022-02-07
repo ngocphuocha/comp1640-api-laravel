@@ -20,7 +20,8 @@ class IdeaController extends Controller
     public function index()
     {
         try {
-            $ideas = Idea::with(['category','department'])->where('is_hidden', '=', false)->paginate(5);
+            $ideas = Idea::with(['category', 'department'])->where('is_hidden', '=', false)
+                ->orderBy('id', 'desc')->paginate(5);
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
