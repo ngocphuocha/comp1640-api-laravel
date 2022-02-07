@@ -17,7 +17,7 @@ Route::middleware(['throttle:global', 'api'])->controller(\App\Http\Controllers\
     Route::delete('/ideas/{idea}/likes', 'unlikeIdea')->middleware(['auth:sanctum']); // delete like idea
 });
 // Comments
-Route::middleware(['throttle:global'])->controller(\App\Http\Controllers\Api\Comments\CommentController::class)->group(function () {
+Route::middleware(['throttle:global', 'api'])->controller(\App\Http\Controllers\Api\Comments\CommentController::class)->group(function () {
     Route::get('/ideas/{idea}/comments', 'index');
     Route::post('/ideas/{idea}/comments', 'store')->middleware(['auth:sanctum', 'api']);
 });

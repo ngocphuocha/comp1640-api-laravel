@@ -17,7 +17,7 @@ class CommentController extends Controller
     public function index(Idea $idea)
     {
         try {
-            $comments = Comment::all();
+            $comments = Comment::where('idea_id', $idea->id)->get();
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
