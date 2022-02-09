@@ -13,6 +13,7 @@ Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group
     Route::get('/ideas/{id}', 'show');
     Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF'); // download pdf idea
     Route::get('/ideas/{idea}/likes', 'getTotalLikeOfIdea'); // get all like idea
+    Route::get('/ideas/{idea}/files', 'checkFilePDFIsExist');
     Route::post('/ideas/{idea}/likes', 'likeIdea')->middleware(['auth:sanctum']); // Like idea
     Route::delete('/ideas/{idea}/likes', 'unlikeIdea')->middleware(['auth:sanctum']); // delete like idea
 });

@@ -12,7 +12,15 @@ class Idea extends Model
     protected $fillable = [
         'title', 'department_id', 'content', 'user_id', 'category_id', 'file_id', 'is_active', 'is_hidden'
     ];
-
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_hidden' => 'boolean',
+        'is_active'=> 'boolean'
+    ];
     /**
      * Get the user that owns the idea.
      */
