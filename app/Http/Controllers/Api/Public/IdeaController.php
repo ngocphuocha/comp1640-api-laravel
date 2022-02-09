@@ -53,6 +53,24 @@ class IdeaController extends Controller
         }
     }
 
+    public function checkFilePDFIsExist(Idea $idea)
+    {
+        try {
+            $idea = Idea::find($idea->id);
+            $fileID = $idea->file_id;
+            $file = File::find($fileID);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 404);
+        }
+        return response()->json($file, 200);
+    }
+
+    /**
+     * Dowload pdf file of idea
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\StreamedResponse
+     */
     public function downloadIdeaAsPDF($id)
     {
         try {
@@ -62,8 +80,10 @@ class IdeaController extends Controller
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
-
-        return Storage::download("ideas/$file->name");
+        $headers = array(
+            'Content-Type: application/pdf',
+        );
+        return Storage::download("ideas/$file->name", $file->name, $headers);
     }
 
 
