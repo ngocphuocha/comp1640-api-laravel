@@ -26,7 +26,6 @@ class StoreIdeaRequest extends FormRequest
         return [
             'title' => ['required'],
             'content' => ['required'],
-            'user_id' => ['required'],
             'category_id' => ['required'],
             'is_hidden' => ['nullable'],
             'file' => ['nullable', 'mimes:pdf'],

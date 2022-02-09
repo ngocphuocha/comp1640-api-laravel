@@ -26,8 +26,9 @@ class StaffController extends Controller
         // Check permission create idea of this staff
         if ($currentUser->hasPermissionTo('ideas.create', 'web')) {
             try {
-                $data = $request->only(['title', 'content', 'user_id', 'category_id',  'is_hidden']);
+                $data = $request->only(['title', 'content', 'category_id',  'is_hidden']);
                 $data['department_id'] = $request->user()->department_id;
+                $data['user_id'] = $request->user()->id;
 
                 if ($request->hasFile('file')) {
                     $file = $request->file('file');
