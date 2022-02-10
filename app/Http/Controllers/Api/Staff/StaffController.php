@@ -35,7 +35,7 @@ class StaffController extends Controller
                     $content = $parser->parseFile($file->path())->getText();
                     $path = $request->file('file')->store('ideas'); // store idea pdf to storage idea folder
                     $newFile = File::create([
-                        'name' => $file->hashName(),
+                        'name' => $file->hashName(), // make unique name
                         'type' => $file->getMimeType(),
                         'size' => $file->getSize(),
                         'path' => $path
