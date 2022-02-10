@@ -56,11 +56,13 @@ class StaffController extends Controller
 
             $data = [
                 "body" => "A new ideas have been upload by user $currentUser->email",
-                "url" => url("api/ideas/$idea->id"),
+                "url" => env('CLIENT_APP_URL') . "/ideas/$idea->id",
             ];
 
-            // Send notification via queue job
-            dispatch(new ProcessSendMailNotificationNewIdea($data));
+            // Send notification via queue job if post is not hidden
+            if ((int)$request->is_hidden === 0) {
+                dispatch(new ProcessSendMailNotificationNewIdea($data));
+            }
 
             return response()->json('Post idea success', 201);
         }
@@ -68,5 +70,4 @@ class StaffController extends Controller
         // If fail
         return response()->json('You have been remove permission to create a ideas', '403');
     }
-
 }
