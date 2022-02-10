@@ -42,7 +42,6 @@ class SuperAdminController extends Controller
             return response()->json($e->getMessage(), 404);
         }
         return response()->json($user, 200);
-
     }
 
     /**
@@ -104,5 +103,17 @@ class SuperAdminController extends Controller
         }
 
         return response()->json($message, 201);
+    }
+
+
+    public function getRoles()
+    {
+        try {
+           $roles = Role::whereNotIn('name', ['super admin'])->get();
+        } catch (\Exception $e) {
+           return response()->json($e->getMessage(), 404);
+        }
+
+        return response()->json($roles, 200);
     }
 }
