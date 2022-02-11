@@ -19,9 +19,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Authentication
-Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
 
-Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum'])->controller(\App\Http\Controllers\Api\Auth\AuthController::class)->group(function () {
+    Route::post('/login', 'login')->withoutMiddleware(['auth:sanctum']);
 
-Route::get('/auth/users', [\App\Http\Controllers\Api\Auth\AuthController::class, 'show'])->middleware(['auth:sanctum']);
+    Route::post('/logout', 'logout');
 
+    Route::get('/auth/users', 'getRole');
+
+    Route::get('/auth/users/profiles', 'show');
+});

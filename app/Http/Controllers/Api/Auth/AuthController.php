@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(UserLoginRequest $request)
+    public function login(UserLoginRequest $request): \Illuminate\Http\JsonResponse
     {
         // check email
         $user = User::where('email', $request->input('email'))->first();
@@ -28,14 +28,14 @@ class AuthController extends Controller
 
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json('Logout success', 200);
     }
 
-    public function show(Request $request)
+    public function getRole(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $user = User::with('roles')->where('id', '=', $request->user()->id)->first();
@@ -43,5 +43,16 @@ class AuthController extends Controller
             return response()->json($e->getMessage(), 404);
         }
         return response()->json($user->roles[0], 200);
+    }
+
+    public function show(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $user = User::with('profile')->where('id', '=', $request->user()->id)->first();
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
+
+        return response()->json($user, 200);
     }
 }
