@@ -21,7 +21,7 @@ class EnsureRoleIsQAManager
         if ($user->hasRole('quality assurance manager')) {
             return $next($request);
         } else {
-            return response()->json('You are not allowed!', 403);
+            return response()->json('You are not allowed! (quality assurance manager)', 403);
         }
     }
 }

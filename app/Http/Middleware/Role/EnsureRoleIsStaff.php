@@ -21,7 +21,7 @@ class EnsureRoleIsStaff
         if ($user->hasRole('staff')) {
             return $next($request);
         } else {
-            return response()->json('You are not allowed!', 403);
+            return response()->json('You are not allowed! (Staff role)', 403);
         }
     }
 }

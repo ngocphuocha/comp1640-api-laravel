@@ -21,7 +21,7 @@ class EnsureRoleIsSuperAdmin
         if ($user->hasRole('super admin')) {
             return $next($request);
         } else {
-            return response()->json('You are not allowed!', 403);
+            return response()->json('You are not allowed!(admin role)', 403);
         }
     }
 }

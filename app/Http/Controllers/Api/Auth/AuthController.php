@@ -32,7 +32,16 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json( 'Logout success', 200);
+        return response()->json('Logout success', 200);
     }
 
+    public function show(Request $request)
+    {
+        try {
+            $user = User::with('roles')->where('id', '=', $request->user()->id)->first();
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
+        return response()->json($user->roles[0], 200);
+    }
 }
