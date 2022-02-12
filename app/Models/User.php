@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'department_id'
     ];
 
     /**
@@ -49,6 +50,14 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne(Profile::class);
+    }
+
+    /**
+     * Get department associated with user
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 
     /*

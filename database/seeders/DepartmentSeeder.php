@@ -15,8 +15,8 @@ class DepartmentSeeder extends Seeder
     public function run()
     {
         Department::insert([
-            ['name' => 'Đào tạo', 'description' => 'this is dao tao'],
-            ['name' => '23', 'description' => 'this 23 department']
+            ['name' => 'Educate', 'description' => 'this is dao tao'],
+            ['name' => 'Accountant', 'description' => 'this 23 department']
         ]);
     }
 }

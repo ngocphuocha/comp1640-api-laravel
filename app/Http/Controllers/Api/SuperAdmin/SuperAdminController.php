@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\SuperAdmin\CreateUserRequest;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,7 +74,7 @@ class SuperAdminController extends Controller
         DB::beginTransaction();
 
         try {
-            $fields = $request->only(['email', 'password']); // Get only email and password
+            $fields = $request->only(['email', 'password', 'department_id']); // Get only email and password
             $fields['password'] = bcrypt($fields['password']); // hash password
 
             $role_id = $request->input('role_id'); //get role id field
@@ -109,11 +110,22 @@ class SuperAdminController extends Controller
     public function getRoles()
     {
         try {
-           $roles = Role::whereNotIn('name', ['super admin'])->get();
+            $roles = Role::whereNotIn('name', ['super admin'])->get();
         } catch (\Exception $e) {
-           return response()->json($e->getMessage(), 404);
+            return response()->json($e->getMessage(), 404);
         }
 
         return response()->json($roles, 200);
+    }
+
+    public function getDepartments(): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $departments = Department::all();
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
+
+        return response()->json($departments, 200);
     }
 }

@@ -48,7 +48,7 @@ class AuthController extends Controller
     public function show(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $user = User::with('profile')->where('id', '=', $request->user()->id)->first();
+            $user = User::with(['profile', 'department'])->where('id', '=', $request->user()->id)->first();
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
