@@ -30,4 +30,8 @@ Route::middleware(['auth:sanctum'])->controller(\App\Http\Controllers\Api\Auth\A
     Route::get('/auth/users/profiles', 'show');
 });
 
-Route::put('/users/profiles', [\App\Http\Controllers\Api\Auth\ProfileController::class, 'update'])->middleware(['auth:sanctum']);
+Route::middleware(['auth:sanctum'])->controller(\App\Http\Controllers\Api\Auth\ProfileController::class)->group(function () {
+    Route::put('/users/profiles', 'update');
+    Route::put('/users/passwords', 'changePassword');
+});
+

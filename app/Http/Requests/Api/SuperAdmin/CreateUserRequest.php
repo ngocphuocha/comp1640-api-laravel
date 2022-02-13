@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\SuperAdmin;
 
+use App\Http\Requests\Api\ApiFormRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUserRequest extends FormRequest
+class CreateUserRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

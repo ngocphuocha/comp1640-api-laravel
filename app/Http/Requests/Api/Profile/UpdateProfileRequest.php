@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\Profile;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Api\ApiFormRequest;
 
-class UpdateProfileRequest extends FormRequest
+
+class UpdateProfileRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
