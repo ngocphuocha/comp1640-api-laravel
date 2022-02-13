@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Auth\UpdatePasswordRequest;
 use App\Http\Requests\Api\Profile\UpdateProfileRequest;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -22,5 +24,27 @@ class ProfileController extends Controller
             return response()->json($exception);
         }
         return response()->json('Update profile success', 200);
+    }
+
+    public function changePassword(UpdatePasswordRequest $request)
+    {
+        $fields = $request->only(['current_password', 'password']);
+        $currentUserPassword = $request->user()->password; // user password in system
+
+        try {
+            // If user input true password then update new password
+            if (Hash::check($fields['current_password'], $currentUserPassword)) {
+                $request->user()->update([
+                    'password' => Hash::make($fields['password'])
+                ]);
+            } else {
+                return response()->json('The current password is wrong!', 403);
+            }
+        } catch (\ErrorException $exception) {
+            return response()->json($exception->getMessage());
+        }
+
+        // If success
+        return response()->json('Change current password successfully', 200);
     }
 }

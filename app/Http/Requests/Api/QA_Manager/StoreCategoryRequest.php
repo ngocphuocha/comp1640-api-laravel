@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\QA_Manager;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Api\ApiFormRequest;
 
-class StoreCategoryRequest extends FormRequest
+class StoreCategoryRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
