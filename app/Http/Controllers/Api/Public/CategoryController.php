@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
@@ -17,5 +19,19 @@ class CategoryController extends Controller
         }
 
         return response()->json($categories, 200);
+    }
+
+    public function show($id)
+    {
+        try {
+            $category = Category::find($id);
+            if(!$category) {
+                throw new \Exception("Category not found");
+            }
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), \Illuminate\Http\Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json($category, Response::HTTP_OK);
     }
 }

@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Categories
-
 Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::class, 'index']);
+Route::get('categories/{id}', [\App\Http\Controllers\Api\Public\CategoryController::class, 'show']);
 
 // Ideas
 Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
