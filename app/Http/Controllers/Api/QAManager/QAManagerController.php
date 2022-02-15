@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\QAManager;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\QA_Manager\UpdateCategoryRequest;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use Spatie\Permission\Models\Permission;
 
 class QAManagerController extends Controller
 {
@@ -22,7 +24,9 @@ class QAManagerController extends Controller
             DB::table('categories')->insert(
                 [
                     'name' => $request->input('name'),
-                    'description' => $request->input('description')
+                    'description' => $request->input('description'),
+                    'created_at' => now(),
+                    'updated_at' => now()
                 ]
             );
         } catch (\Exception $e) {
@@ -34,19 +38,54 @@ class QAManagerController extends Controller
     }
 
     /**
+     * Update category from resource
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateCategory($id, UpdateCategoryRequest $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $category = Category::find($id);
+            if (!$category) {
+                throw new \Exception("Category not found");
+            }
+
+            $category->update($request->only(['name', 'description']));
+            return response()->json('Update category success', Response::HTTP_ACCEPTED);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
      * Delete category from resource
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteCategory($id)
+    public function deleteCategory($id): \Illuminate\Http\JsonResponse
     {
         try {
-            DB::table('categories')->delete($id);
+            if (is_null(DB::table('categories')->find($id))) {
+                throw new \Exception("This category not found", Response::HTTP_NOT_FOUND);
+            }
+
+            $category = DB::table('categories')
+                ->join('ideas', 'categories.id', '=', 'ideas.category_id')
+                ->where('categories.id', '=', $id)
+                ->get();
+
+            if ($category->count() > 0) {
+                throw new \Exception("This category can't delete because it have used by idea", Response::HTTP_NOT_ACCEPTABLE);
+            } else {
+                DB::table('categories')->delete($id);
+            }
+
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 404);
+            return response()->json($e->getMessage(), $e->getCode());
         }
-        return response()->json('Delete category success', '200');
+        return response()->json('Delete category success', Response::HTTP_ACCEPTED);
     }
+
 
     /**
      * Update user permission vie method sync permission
@@ -55,7 +94,7 @@ class QAManagerController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updateUserPermissions($id, Request $request)
+    public function updateUserPermissions($id, Request $request): \Illuminate\Http\JsonResponse
     {
         // TODO: Nhớ làm cái này bên frontend là multiple select option, chỉ lấy mấy thằng staff và qa của mỗi department
         // Get list permission from request of user
@@ -78,4 +117,6 @@ class QAManagerController extends Controller
 
         return response()->json('Update permission success', 200);
     }
+
+
 }
