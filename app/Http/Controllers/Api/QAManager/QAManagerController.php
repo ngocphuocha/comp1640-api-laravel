@@ -21,7 +21,7 @@ class QAManagerController extends Controller
     public function createNewCategory(\App\Http\Requests\Api\QA_Manager\StoreCategoryRequest $request)
     {
         try {
-            DB::table('categories')->insert(
+            $categoryId = DB::table('categories')->insertGetId(
                 [
                     'name' => $request->input('name'),
                     'description' => $request->input('description'),
@@ -30,11 +30,10 @@ class QAManagerController extends Controller
                 ]
             );
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 409);
+            return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // if success
-        return response()->json('Create new category success', '201');
+        return response()->json(['categoryId' => $categoryId], Response::HTTP_CREATED); // Success response
     }
 
     /**
