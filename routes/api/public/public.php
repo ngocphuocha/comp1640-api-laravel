@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Categories
@@ -11,6 +10,7 @@ Route::get('categories/{id}', [\App\Http\Controllers\Api\Public\CategoryControll
 Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
     Route::get('/ideas', 'index');
     Route::get('/ideas/{id}', 'show');
+    Route::get('/ideas/{id}/like/is-exist', 'checkIsExistLike')->middleware(['auth:sanctum']);
     Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF'); // download pdf idea
     Route::get('/ideas/{idea}/likes', 'getTotalLikeOfIdea'); // get all like idea
     Route::get('/ideas/{idea}/files', 'checkFilePDFIsExist');

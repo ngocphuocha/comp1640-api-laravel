@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\Idea;
 use App\Models\IdeaLike;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -86,26 +87,6 @@ class IdeaController extends Controller
         return Storage::download("ideas/$file->name", $file->name, $headers);
     }
 
-
-    /**
-     * Check idea's like is exist in resouces
-     *
-     * @param $id
-     * @param Request $request
-     * @return false|IdeaLike[]|\Illuminate\Database\Eloquent\Collection false if resource not found, otherwise instance idea's like
-     */
-    public function checkLikeIdeaIsExist($id, Request $request)
-    {
-        $ideaLike = IdeaLike::where('user_id', $request->user()->id)
-            ->where('idea_id', $id)
-            ->first();
-
-        if (is_null($ideaLike)) {
-            return false;
-        }
-        return $ideaLike;
-    }
-
     /**
      * Store a like idea in idea_likes table
      * @param Idea $idea
@@ -128,6 +109,24 @@ class IdeaController extends Controller
         }
 
         return response()->json('Like success', 201);
+    }
+
+    /**
+     * Check idea's like is exist in resouces
+     *
+     * @param $id
+     * @param Request $request
+     * @return false|IdeaLike[]|\Illuminate\Database\Eloquent\Collection false if resource not found, otherwise instance idea's like
+     */
+    public function checkLikeIdeaIsExist($id, Request $request)
+    {
+        // Get like of user where idea = idea id
+        $ideaLike = IdeaLike::where('user_id', $request->user()->id)->where('idea_id', $id)->first();
+
+        if (is_null($ideaLike)) {
+            return false;
+        }
+        return $ideaLike;
     }
 
     /**
@@ -171,5 +170,26 @@ class IdeaController extends Controller
         return response()->json($ideaLikeCount, 200);
     }
 
+    /**
+     * Check idea is liked
+     *
+     * @param $ideaId
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkIsExistLike($ideaId, Request $request)
+    {
+        $result = $this->checkLikeIdeaIsExist($ideaId, $request);
 
+        try {
+            if ($result === false) {
+                return response()->json(['isExist' => false], Response::HTTP_OK);
+            } else {
+                return response()->json(['isExist' => true], Response::HTTP_OK);
+            }
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage());
+        }
+
+    }
 }
