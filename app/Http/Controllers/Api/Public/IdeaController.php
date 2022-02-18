@@ -38,10 +38,14 @@ class IdeaController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(Idea::with(['user', 'department'])->findOrFail($id), 200);
+            $idea = Idea::with(['user', 'department'])->where('id', '=', $id)->first();
+            if (is_null($idea)) {
+                throw new \Exception('Idea not found', Response::HTTP_NOT_FOUND);
+            }
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 404);
+            return response()->json(['error' => $e->getMessage()], $e->getCode());
         }
+        return response()->json($idea, Response::HTTP_OK);
     }
 
 
