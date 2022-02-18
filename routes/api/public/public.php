@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::class, 'index']);
 Route::get('categories/{id}', [\App\Http\Controllers\Api\Public\CategoryController::class, 'show']);
 
-// Ideas
+// UserIdeas
 Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
     Route::get('/ideas', 'index');
     Route::get('/ideas/{id}', 'show');

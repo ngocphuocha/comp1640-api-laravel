@@ -33,17 +33,17 @@ class StaffController extends Controller
                 if ($request->hasFile('file')) {
                     $file = $request->file('file');
                     $content = $parser->parseFile($file->path())->getText();
-                    $path = $request->file('file')->store('ideas'); // store idea pdf to storage idea folder
-                    $newFile = File::create([
-                        'name' => $file->hashName(), // make unique name
-                        'type' => $file->getMimeType(),
-                        'size' => $file->getSize(),
-                        'path' => $path
-                    ]);
+//                    $path = $request->file('file')->store('ideas'); // store idea pdf to storage idea folder
+//                    $newFile = File::create([
+//                        'name' => $file->hashName(), // make unique name
+//                        'type' => $file->getMimeType(),
+//                        'size' => $file->getSize(),
+//                        'path' => $path
+//                    ]);
 
                     // Change data content if user choose post idea vie pdf file
                     $data['content'] = $content;
-                    $data['file_id'] = $newFile->id;
+//                    $data['file_id'] = $newFile->id;
                 }
                 $idea = Idea::create($data);
 
@@ -56,11 +56,11 @@ class StaffController extends Controller
 
             $data = [
                 "body" => "A new ideas have been upload by user $currentUser->email",
-                "url" => env('CLIENT_APP_URL') . "/ideas/$idea->id",
+                "url" => env('CLIENT_APP_URL') . "/ideas/$idea->id", // detail idea with client side url (ReactJS)
             ];
 
             // Send notification via queue job if post is not hidden
-            if ((int)$request->is_hidden === 0) {
+            if ((int)$request->is_hidden === 0) { // cast hidden_post to integer type
                 dispatch(new ProcessSendMailNotificationNewIdea($data));
             }
 

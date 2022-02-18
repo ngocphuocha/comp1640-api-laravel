@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json($request->user(), \Illuminate\Http\Response::HTTP_OK);
 });
 
 // Authentication
@@ -35,3 +35,7 @@ Route::middleware(['auth:sanctum'])->controller(\App\Http\Controllers\Api\Auth\P
     Route::put('/users/passwords', 'changePassword');
 });
 
+Route::middleware(['auth:sanctum'])->controller(\App\Http\Controllers\Api\Ideas\IdeaController::class)->group(function () {
+    Route::get('/users/ideas', 'index');
+    Route::delete('users/ideas/{id}', 'destroy');
+});
