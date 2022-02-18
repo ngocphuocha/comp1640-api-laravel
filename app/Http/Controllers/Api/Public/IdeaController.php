@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\File;
 use App\Models\Idea;
 use App\Models\IdeaLike;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Mpdf\Mpdf;
 
 class IdeaController extends Controller
 {
@@ -31,15 +30,6 @@ class IdeaController extends Controller
 
 
     /**
-     * @return IdeaLike[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function demo()
-    {
-        $idealike = IdeaLike::all();
-        return $idealike;
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param int $id
@@ -54,17 +44,6 @@ class IdeaController extends Controller
         }
     }
 
-    public function checkFilePDFIsExist(Idea $idea)
-    {
-        try {
-            $idea = Idea::find($idea->id);
-            $fileID = $idea->file_id;
-            $file = File::find($fileID);
-        } catch (\Exception $exception) {
-            return response()->json($exception->getMessage(), 404);
-        }
-        return response()->json($file, 200);
-    }
 
     /**
      * Dowload pdf file of idea
@@ -72,19 +51,22 @@ class IdeaController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function downloadIdeaAsPDF($id)
+    public function downloadIdeaAsPDF($id, Mpdf $mpdf)
     {
         try {
             $idea = Idea::find($id);
-            $fileID = $idea->file_id;
-            $file = File::find($fileID);
+
+            // if idea not null then download
+            if (!is_null($idea)) {
+                $mpdf->WriteHTML($idea->content);
+                $mpdf->Output($idea->title, 'D');
+            } else {
+                throw new \Exception('Idea not found', 404);
+            }
+
         } catch (\Exception $exception) {
-            return response()->json($exception->getMessage(), 404);
+            return response()->json($exception->getMessage(), $exception->getCode());
         }
-        $headers = array(
-            'Content-Type: application/pdf',
-        );
-        return Storage::download("ideas/$file->name", $file->name, $headers);
     }
 
     /**
