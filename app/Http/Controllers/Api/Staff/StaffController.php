@@ -7,9 +7,8 @@ use App\Http\Requests\Api\Staff\StoreIdeaRequest;
 use App\Jobs\ProcessSendMailNotificationNewIdea;
 use App\Models\Idea;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
 use Smalot\PdfParser\Parser;
-use App\Models\File;
+use Spatie\Permission\Models\Permission;
 
 class StaffController extends Controller
 {
@@ -26,7 +25,7 @@ class StaffController extends Controller
         // Check permission create idea of this staff
         if ($currentUser->hasPermissionTo('ideas.create', 'web')) {
             try {
-                $data = $request->only(['title', 'content', 'category_id',  'is_hidden']);
+                $data = $request->only(['title', 'content', 'category_id', 'is_hidden']);
                 $data['department_id'] = $request->user()->department_id;
                 $data['user_id'] = $request->user()->id;
 

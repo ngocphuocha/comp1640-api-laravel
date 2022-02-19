@@ -17,15 +17,31 @@ class IdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $ideas = Idea::with(['category', 'department'])->where('is_hidden', '=', false)
-                ->orderBy('id', 'desc')->paginate(5);
+            if (!is_null($request->query('title'))) {
+                $ideas = $this->searchIdea($request);
+            } else {
+                $ideas = Idea::with(['category', 'department'])->where('is_hidden', '=', false)
+                    ->orderBy('id', 'desc')->paginate(5);
+            }
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
         return response()->json($ideas, 200);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|void
+     */
+    protected function searchIdea(Request $request)
+    {
+        $ideas = Idea::with(['department', 'category'])->where('is_hidden', '=', false)->where('title', 'like', '%' . $request->query('title') . '%')->paginate(5);
+        $ideas = $ideas->appends(['title' => $request->query('title')]);
+        return $ideas;
     }
 
 
@@ -35,7 +51,8 @@ class IdeaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public
+    function show($id)
     {
         try {
             $idea = Idea::with(['user', 'department'])->where('id', '=', $id)->first();
@@ -68,7 +85,6 @@ class IdeaController extends Controller
             } else {
                 throw new \Exception('Idea not found', 404);
             }
-
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), $exception->getCode());
         }
@@ -80,7 +96,8 @@ class IdeaController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function likeIdea(Request $request, Idea $idea)
+    public
+    function likeIdea(Request $request, Idea $idea)
     {
         try {
             if ($this->checkLikeIdeaIsExist($idea->id, $request) === false) {
@@ -177,6 +194,5 @@ class IdeaController extends Controller
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage());
         }
-
     }
 }

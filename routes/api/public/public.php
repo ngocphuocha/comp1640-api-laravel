@@ -7,8 +7,9 @@ Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::
 Route::get('categories/{id}', [\App\Http\Controllers\Api\Public\CategoryController::class, 'show']);
 
 // UserIdeas
+
 Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
-    Route::get('/ideas', 'index');
+    Route::get('/ideas', 'index')->withoutMiddleware('api')->middleware('throttle:global');
     Route::get('/ideas/{id}', 'show');
     Route::get('/ideas/{id}/like/is-exist', 'checkIsExistLike')->middleware(['auth:sanctum']);
     Route::get('/ideas/{id}/download', 'downloadIdeaAsPDF'); // download pdf idea

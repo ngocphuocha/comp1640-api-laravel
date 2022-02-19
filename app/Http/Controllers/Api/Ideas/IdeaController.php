@@ -28,6 +28,7 @@ class IdeaController extends Controller
         return response()->json($ideas, 200);
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
