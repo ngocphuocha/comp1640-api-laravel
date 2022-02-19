@@ -62,8 +62,9 @@ class IdeaController extends Controller
 
             // if idea not null then download
             if (!is_null($idea)) {
+                $fileName = $idea->title . ".pdf";
                 $mpdf->WriteHTML($idea->content);
-                $mpdf->Output($idea->title, 'D');
+                $mpdf->Output($fileName, 'D');
             } else {
                 throw new \Exception('Idea not found', 404);
             }
