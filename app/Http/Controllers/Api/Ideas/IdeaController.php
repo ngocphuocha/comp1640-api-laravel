@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Ideas;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Idea\UpdateIdeaRequest;
 use App\Models\Idea;
 use Exception;
 use Illuminate\Http\Request;
@@ -54,11 +55,23 @@ class IdeaController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateIdeaRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
-        //
+        try {
+            $idea = DB::table('ideas')->where('id', '=', $id)->first();
+
+            if (is_null($idea)) {
+                throw new Exception('Idea not found', Response::HTTP_NOT_FOUND);
+            }
+
+            // else then update this idea
+            DB::table('ideas')->where('id', '=', $id)->update($request->only(['title', 'content', 'category_id']));
+        } catch (Exception $exception) {
+            return response()->json($exception->getMessage());
+        }
+        return response()->json('Update category success', Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -75,7 +88,7 @@ class IdeaController extends Controller
             // Delete comments
             DB::table('comments')->where('idea_id', '=', $id)->delete();
             // Delete idea like
-           DB::table('idea_likes')->where('idea_id', '=', $id)->delete();
+            DB::table('idea_likes')->where('idea_id', '=', $id)->delete();
             // Delete ideas
             DB::table('ideas')->delete($id);
 
