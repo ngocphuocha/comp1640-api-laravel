@@ -38,7 +38,7 @@ class SuperAdminController extends Controller
         }
 
         try {
-            $user = User::whereIn('id', $listOfId)->paginate(5);
+            $user = User::with('department')->whereIn('id', $listOfId)->paginate(5);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
@@ -51,12 +51,18 @@ class SuperAdminController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUsersInfo($id)
+    public function getUsersInfo($id): \Illuminate\Http\JsonResponse
     {
         $adminRoleId = Role::findByName('super admin', 'web')->id; // Get admin role id
 
         try {
-            $user = User::with(['roles', 'permissions'])->findOrFail($id);
+            $user = User::with(['roles', 'permissions', 'profile', 'department'])
+                ->join('model_has_roles', function ($join) use ($adminRoleId) {
+                    $join->on('users.id', '=', 'model_has_roles.model_id')
+                        ->where('model_has_roles.role_id', '!=', $adminRoleId);
+                })
+                ->findOrFail($id);
+//            dd($user);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
