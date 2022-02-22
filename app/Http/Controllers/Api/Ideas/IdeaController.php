@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 class IdeaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of user
      *
      * @return \Illuminate\Http\JsonResponse
      */

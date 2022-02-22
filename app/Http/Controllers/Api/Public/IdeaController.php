@@ -32,14 +32,46 @@ class IdeaController extends Controller
         return response()->json($ideas, 200);
     }
 
+    /**
+     * Get all hidden ideas
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getHiddenIdeas(Request $request)
+    {
+        try {
+            if (!is_null($request->query('title'))) {
+                $ideas = $this->searchHiddenIdea($request);
+            } else {
+                $ideas = Idea::with(['category', 'department'])->where('is_hidden', '=', true)
+                    ->orderBy('id', 'desc')->paginate(5);
+            }
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 404);
+        }
+        return response()->json($ideas, 200);
+    }
 
     /**
+     *  Search idea is not hidden
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|void
      */
     protected function searchIdea(Request $request)
     {
         $ideas = Idea::with(['department', 'category'])->where('is_hidden', '=', false)->where('title', 'like', '%' . $request->query('title') . '%')->paginate(5);
+        $ideas = $ideas->appends(['title' => $request->query('title')]);
+        return $ideas;
+    }
+
+    /**
+     * Search Idea is hidden
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|void
+     */
+    protected function searchHiddenIdea(Request $request)
+    {
+        $ideas = Idea::with(['department', 'category'])->where('is_hidden', '=', true)->where('title', 'like', '%' . $request->query('title') . '%')->paginate(5);
         $ideas = $ideas->appends(['title' => $request->query('title')]);
         return $ideas;
     }
