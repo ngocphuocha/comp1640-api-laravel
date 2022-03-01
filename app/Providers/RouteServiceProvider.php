@@ -59,6 +59,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api/qa-managers/qa-managers-router.php'));
 
+            // QA CD api route
+            Route::prefix('api')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api/qa-cd/qa-cd.php'));
             // Staff api route
             Route::prefix('api')
                 ->middleware('api')

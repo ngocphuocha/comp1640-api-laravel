@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\SuperAdmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use mysql_xdevapi\Exception;
+use Exception;
 
 class StatisticsController extends Controller
 {
@@ -35,10 +35,5 @@ class StatisticsController extends Controller
             return response()->json($exception->getMessage());
         }
         return response()->json($query, Response::HTTP_OK);
-    }
-
-    public function getHidenIdeas()
-    {
-
     }
 }

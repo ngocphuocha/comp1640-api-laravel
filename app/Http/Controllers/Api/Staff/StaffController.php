@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Staff\StoreIdeaRequest;
 use App\Jobs\ProcessSendMailNotificationNewIdea;
 use App\Models\Idea;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Smalot\PdfParser\Parser;
 use Spatie\Permission\Models\Permission;
 
@@ -23,7 +24,7 @@ class StaffController extends Controller
         $currentUser = $request->user();
 
         // Check permission create idea of this staff
-        if ($currentUser->hasPermissionTo('ideas.create', 'web')) {
+        if ($currentUser->hasDirectPermission('ideas.create')) {
             try {
                 $data = $request->only(['title', 'content', 'category_id', 'is_hidden']);
                 $data['department_id'] = $request->user()->department_id;
@@ -64,9 +65,8 @@ class StaffController extends Controller
             }
 
             return response()->json('Post idea success', 201);
+        } else {
+            return response()->json("You don't have permission to post a idea", Response::HTTP_FORBIDDEN);
         }
-
-        // If fail
-        return response()->json('You have been remove permission to create a ideas', '403');
     }
 }

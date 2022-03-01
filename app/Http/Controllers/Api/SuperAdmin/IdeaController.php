@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\DB;
 
 class IdeaController extends Controller
 {
-    public function getIdeasNotHaveComment()
+    public function getIdeasNotHaveComment(): \Illuminate\Http\JsonResponse
     {
-        // Get idea have comment
+        // Get idea to have a comment
         try {
             $ideaHaveComments = DB::table('ideas')
                 ->join('comments', 'ideas.id', '=', 'comments.idea_id')
@@ -27,5 +27,4 @@ class IdeaController extends Controller
 
         return response()->json($ideaNotHaveComments, 200);
     }
-
 }
