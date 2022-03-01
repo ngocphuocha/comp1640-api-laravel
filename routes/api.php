@@ -19,7 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Authentication
-
 Route::middleware(['auth:sanctum'])->controller(\App\Http\Controllers\Api\Auth\AuthController::class)->group(function () {
     Route::post('/login', 'login')->withoutMiddleware(['auth:sanctum']);
 

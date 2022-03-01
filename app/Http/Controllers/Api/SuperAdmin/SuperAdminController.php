@@ -18,11 +18,12 @@ class SuperAdminController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getListUsers(Request $request)
+    public function getListUsers(Request $request): \Illuminate\Http\JsonResponse
     {
+        // Get admin role id
         $adminRoleId = Role::findByName('super admin', 'web')->id;
 
-        // Get list with query role id, but not included Admin role
+        // Get list with query role id, but not include Admin role
         if ($request->has('roleId')) {
             $listOfId = DB::table('model_has_roles')
                 ->where('model_type', 'App\Models\User')
@@ -38,11 +39,11 @@ class SuperAdminController extends Controller
         }
 
         try {
-            $user = User::with('department')->whereIn('id', $listOfId)->paginate(5);
+            $users = User::with('department')->whereIn('id', $listOfId)->paginate(5);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-        return response()->json($user, 200);
+        return response()->json($users, 200);
     }
 
     /**
@@ -108,7 +109,6 @@ class SuperAdminController extends Controller
             DB::rollBack();
             $message = $e->getMessage();
         }
-
         return response()->json($message, 201);
     }
 
@@ -120,7 +120,6 @@ class SuperAdminController extends Controller
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-
         return response()->json($roles, 200);
     }
 
@@ -131,7 +130,6 @@ class SuperAdminController extends Controller
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-
         return response()->json($departments, 200);
     }
 }

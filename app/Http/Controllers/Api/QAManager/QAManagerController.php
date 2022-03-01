@@ -84,38 +84,4 @@ class QAManagerController extends Controller
         }
         return response()->json('Delete category success', Response::HTTP_ACCEPTED);
     }
-
-
-    /**
-     * Update user permission vie method sync permission
-     *
-     * @param $id
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function updateUserPermissions($id, Request $request): \Illuminate\Http\JsonResponse
-    {
-        // TODO: Nhớ làm cái này bên frontend là multiple select option, chỉ lấy mấy thằng staff và qa của mỗi department
-        // Get list permission from request of user
-        $permissions = DB::table('permissions')
-            ->whereIn('id', [2])
-            ->select('name')
-            ->get();
-
-        $data = [];
-        foreach ($permissions as $key => $value) {
-            $data[$key] = $value->name;
-        }
-
-        try {
-            $user = User::findOrFail($id);
-            $user->syncPermissions($data); // keep array permission from request
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 404);
-        }
-
-        return response()->json('Update permission success', 200);
-    }
-
-
 }
