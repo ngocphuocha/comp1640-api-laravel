@@ -33,17 +33,9 @@ class StaffController extends Controller
                 if ($request->hasFile('file')) {
                     $file = $request->file('file');
                     $content = $parser->parseFile($file->path())->getText();
-//                    $path = $request->file('file')->store('ideas'); // store idea pdf to storage idea folder
-//                    $newFile = File::create([
-//                        'name' => $file->hashName(), // make unique name
-//                        'type' => $file->getMimeType(),
-//                        'size' => $file->getSize(),
-//                        'path' => $path
-//                    ]);
 
                     // Change data content if user choose post idea vie pdf file
                     $data['content'] = $content;
-//                    $data['file_id'] = $newFile->id;
                 }
                 $idea = Idea::create($data);
 
