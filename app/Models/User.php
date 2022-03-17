@@ -19,9 +19,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'department_id'
     ];
 
     /**
@@ -42,4 +42,34 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    /**
+     * Get the profile associated with the user.
+     */
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    /**
+     * Get department associated with user
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    /*
+     * Get the ideas for the user.
+     */
+    public function ideas()
+    {
+        return $this->hasMany(Idea::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

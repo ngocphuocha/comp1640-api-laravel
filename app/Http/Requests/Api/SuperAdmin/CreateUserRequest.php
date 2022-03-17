@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\SuperAdmin;
 
+use App\Http\Requests\Api\ApiFormRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUserRequest extends FormRequest
+class CreateUserRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +25,13 @@ class CreateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'unique:users,email'],
-            'name' => ['required', 'min:5', 'max:30'],
-            'password' => ['required', 'min:10', 'max:30'],
+            'email' => ['required', 'string', 'unique:users,email'],
+            'name' => ['required', 'string', 'min:5', 'max:255'],
+            'gender' => ['required'],
+            'phone_number' => ['required', 'size:10'],
+            'address' => ['required'],
+            'role_id' => ['required'],
+            'password' => ['required', 'string', 'min:5', 'max:30', 'confirmed'],
         ];
     }
 }

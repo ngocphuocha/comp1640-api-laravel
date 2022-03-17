@@ -15,11 +15,34 @@ class UserSeeder extends Seeder
     public function run()
     {
         $superAdmin = User::create([
-            'name' => 'tao la super admin',
             'email' => 'superadmin@gmail.com',
             'password' => bcrypt('superadmin@gmail.com'),
         ]);
         $superAdmin->assignRole('super admin');
-        $superAdmin->givePermissionTo('users');
+        $superAdmin->givePermissionTo(['users.create', 'users.show', 'users.edit', 'users.delete']);
+
+        $qaManager = User::create([
+            'email' => 'qamanager@gmail.com',
+            'password' => bcrypt('qamanager@gmail.com'),
+        ]);
+        $qaManager->assignRole('quality assurance manager');
+        $qaManager->givePermissionTo(['categories.create', 'categories.show', 'categories.edit', 'categories.delete']);
+
+        $QACoordinatorRole = User::create([
+            'email' => 'qac@gmail.com',
+            'password' => bcrypt('qac@gmail.com'),
+            'department_id' => 1,
+        ]);
+        $QACoordinatorRole->assignRole('QA coordinator');
+        $QACoordinatorRole->givePermissionTo(['staffs']);
+
+
+        $staff = User::create([
+            'email' => 'staff@gmail.com',
+            'password' => bcrypt('staff@gmail.com'),
+            'department_id' => 1
+        ]);
+        $staff->assignRole('staff');
+        $staff->givePermissionTo(['ideas.create', 'ideas.show', 'ideas.edit', 'ideas.delete']);
     }
 }
