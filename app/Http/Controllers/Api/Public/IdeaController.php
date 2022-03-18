@@ -127,8 +127,7 @@ class IdeaController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public
-    function likeIdea(Request $request, Idea $idea)
+    public function likeIdea(Request $request, Idea $idea)
     {
         try {
             if ($this->checkLikeIdeaIsExist($idea->id, $request) === false) {
