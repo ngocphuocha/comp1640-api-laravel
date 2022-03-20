@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class IdeaLike extends Model
 {
@@ -14,9 +15,9 @@ class IdeaLike extends Model
     /**
      * Get idea has own like
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function idea()
+    public function idea(): BelongsTo
     {
         return $this->belongsTo(Idea::class);
     }
@@ -24,9 +25,9 @@ class IdeaLike extends Model
     /**
      * Get user has own like
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user():BelongsTo
     {
         return $this->belongsTo(User::class);
     }

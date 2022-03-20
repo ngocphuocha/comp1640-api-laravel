@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class StatisticsController extends Controller
 {
@@ -17,10 +16,11 @@ class StatisticsController extends Controller
                 ->select(DB::raw("count(*) as 'total_ideas', departments.name as 'department_name'"))
                 ->groupBy('ideas.department_id')
                 ->get();
+            return response()->json($query);
         } catch (Exception $exception) {
             return response()->json($exception->getMessage());
         }
-        return response()->json($query, Response::HTTP_OK);
+
     }
 
     public function getTotalUserEachDepartment()
@@ -31,9 +31,9 @@ class StatisticsController extends Controller
                 ->select(DB::raw("count(*) as 'total_contributors', departments.name as 'department_name'"))
                 ->groupBy('users.department_id')
                 ->get();
+            return response()->json($query);
         } catch (Exception $exception) {
             return response()->json($exception->getMessage());
         }
-        return response()->json($query, Response::HTTP_OK);
     }
 }

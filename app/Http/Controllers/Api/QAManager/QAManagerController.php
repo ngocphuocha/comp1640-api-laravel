@@ -3,22 +3,23 @@
 namespace App\Http\Controllers\Api\QAManager;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\QA_Manager\StoreCategoryRequest;
 use App\Http\Requests\Api\QA_Manager\UpdateCategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
 
 class QAManagerController extends Controller
 {
     /**
      * Create new categories in resource
      *
-     * @param \App\Http\Requests\Api\QA_Manager\StoreCategoryRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param StoreCategoryRequest $request
+     * @return JsonResponse
      */
-    public function createNewCategory(\App\Http\Requests\Api\QA_Manager\StoreCategoryRequest $request)
+    public function createNewCategory(StoreCategoryRequest $request)
     {
         try {
             $categoryId = DB::table('categories')->insertGetId(
@@ -29,7 +30,7 @@ class QAManagerController extends Controller
                     'updated_at' => now()
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -38,34 +39,36 @@ class QAManagerController extends Controller
 
     /**
      * Update category from resource
+     *
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function updateCategory($id, UpdateCategoryRequest $request): \Illuminate\Http\JsonResponse
+    public function updateCategory($id, UpdateCategoryRequest $request): JsonResponse
     {
         try {
             $category = Category::find($id);
             if (!$category) {
-                throw new \Exception("Category not found");
+                throw new Exception("Category not found");
             }
 
             $category->update($request->only(['name', 'description']));
             return response()->json('Update category success', Response::HTTP_ACCEPTED);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
     }
 
     /**
      * Delete category from resource
+     *
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function deleteCategory($id): \Illuminate\Http\JsonResponse
+    public function deleteCategory($id): JsonResponse
     {
         try {
             if (is_null(DB::table('categories')->find($id))) {
-                throw new \Exception("This category not found", Response::HTTP_NOT_FOUND);
+                throw new Exception("This category not found", Response::HTTP_NOT_FOUND);
             }
 
             $category = DB::table('categories')
@@ -74,14 +77,14 @@ class QAManagerController extends Controller
                 ->get();
 
             if ($category->count() > 0) {
-                throw new \Exception("This category can't delete because it have used by idea", Response::HTTP_NOT_ACCEPTABLE);
+                throw new Exception("This category can't delete because it have used by staff", Response::HTTP_NOT_ACCEPTABLE);
             } else {
                 DB::table('categories')->delete($id);
             }
 
-        } catch (\Exception $e) {
+            return response()->json('Delete category success', Response::HTTP_ACCEPTED);
+        } catch (Exception $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }
-        return response()->json('Delete category success', Response::HTTP_ACCEPTED);
     }
 }

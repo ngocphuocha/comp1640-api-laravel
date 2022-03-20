@@ -21,10 +21,10 @@ class CommentController extends Controller
     {
         try {
             $comments = Comment::with('user')->where('idea_id', $idea->id)->get();
+            return response()->json($comments );
         } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 404);
         }
-        return response()->json($comments, 200);
     }
 
     /**
@@ -42,11 +42,10 @@ class CommentController extends Controller
                 'user_id' => $request->user()->id,
                 'idea_id' => $idea->id,
             ]);
+            return response()->json('Post comment success', 201);
         } catch (Exception $exception) {
-            return response()->json($exception->getMessage(), 409);
+            return response()->json($exception->getMessage(), 500);
         }
-
-        return response()->json('Post comment success', 201);
     }
 
 
@@ -74,7 +73,7 @@ class CommentController extends Controller
                 throw new Exception($message);
             }
         } catch (Exception $exception) {
-            return response()->json($exception->getMessage());
+            return response()->json($exception->getMessage(), 500);
         }
     }
 

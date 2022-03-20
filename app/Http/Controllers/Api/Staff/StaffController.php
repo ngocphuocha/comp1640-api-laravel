@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Staff\StoreIdeaRequest;
 use App\Jobs\ProcessSendMailNotificationNewIdea;
 use App\Models\Idea;
+use App\Models\User;
+use App\Notifications\NotifyNewPostToAllUsers;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Smalot\PdfParser\Parser;
@@ -17,7 +21,7 @@ class StaffController extends Controller
      * Store new idea in resources
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function postIdea(StoreIdeaRequest $request, Parser $parser)
     {
@@ -42,7 +46,7 @@ class StaffController extends Controller
                 // create permission to edit and delete later access
                 Permission::create(['guard_name' => 'web', 'name' => "idea.edit.$idea->id"]);
                 Permission::create(['guard_name' => 'web', 'name' => "idea.delete.$idea->id"]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return response()->json($e->getMessage(), 409);
             }
 
@@ -53,7 +57,8 @@ class StaffController extends Controller
 
             // Send notification via queue job if post is not hidden
             if ((int)$request->is_hidden === 0) { // cast hidden_post to integer type
-                dispatch(new ProcessSendMailNotificationNewIdea($data));
+                $users = User::all();
+                $users->each->notify(new NotifyNewPostToAllUsers($data));
             }
 
             return response()->json('Post idea success', 201);

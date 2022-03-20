@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class File extends Model
 {
@@ -11,7 +12,7 @@ class File extends Model
 
     protected $fillable = ['name', 'path', 'type', 'size'];
 
-    public function idea()
+    public function idea(): BelongsTo
     {
         return $this->belongsTo(Idea::class);
     }
