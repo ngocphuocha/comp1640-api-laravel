@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\SuperAdmin\CreateUserRequest;
 use App\Models\Department;
 use App\Models\User;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -16,9 +18,9 @@ class SuperAdminController extends Controller
      * Get list users
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getListUsers(Request $request): \Illuminate\Http\JsonResponse
+    public function getListUsers(Request $request): JsonResponse
     {
         // Get admin role id
         $adminRoleId = Role::findByName('super admin', 'web')->id;
@@ -39,20 +41,20 @@ class SuperAdminController extends Controller
         }
 
         try {
-            $users = User::with('department')->whereIn('id', $listOfId)->paginate(5);
-        } catch (\Exception $e) {
+            $users = User::with('department')->whereIn('id', $listOfId)->orderBy('id', 'desc')->paginate(5);
+            return response()->json($users);
+        } catch (Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-        return response()->json($users, 200);
     }
 
     /**
      * Get detail info of users
      *
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getUsersInfo($id): \Illuminate\Http\JsonResponse
+    public function getUsersInfo($id): JsonResponse
     {
         $adminRoleId = Role::findByName('super admin', 'web')->id; // Get admin role id
 
@@ -62,19 +64,23 @@ class SuperAdminController extends Controller
                     $join->on('users.id', '=', 'model_has_roles.model_id')
                         ->where('model_has_roles.role_id', '!=', $adminRoleId);
                 })
-                ->findOrFail($id);
-//            dd($user);
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 404);
+                ->find($id);
+
+            if (is_null($user)) {
+                return response()->json('User not found', 404);
+            }
+
+            return response()->json($user);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 500);
         }
-        return response()->json($user, 200);
     }
 
     /**
      * Admin create new user for system
      *
      * @param CreateUserRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function createUser(CreateUserRequest $request)
     {
@@ -85,7 +91,7 @@ class SuperAdminController extends Controller
             $fields['password'] = bcrypt($fields['password']); // hash password
 
             $role_id = $request->input('role_id'); //get role id field
-            $permissions = Role::findById($role_id, 'web')->permissions; // get all persmissions with role id
+            $permissions = Role::findById($role_id, 'web')->permissions; // get all permissions with role id
 
             $dataPermissions = [];
 
@@ -105,31 +111,40 @@ class SuperAdminController extends Controller
 
             $message = 'Register successfully';
             return response()->json(['success' => $message], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
-            $message = $e->getMessage();
+            return response()->json($e->getMessage(), 500);
         }
-        return response()->json($message, 201);
     }
 
 
-    public function getRoles()
+    /**
+     * Get all role of user not include admin role
+     *
+     * @return JsonResponse
+     */
+    public function getRoles(): JsonResponse
     {
         try {
             $roles = Role::whereNotIn('name', ['super admin'])->get();
-        } catch (\Exception $e) {
+            return response()->json($roles);
+        } catch (Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-        return response()->json($roles, 200);
     }
 
-    public function getDepartments(): \Illuminate\Http\JsonResponse
+    /**
+     * Get all the department
+     *
+     * @return JsonResponse
+     */
+    public function getDepartments(): JsonResponse
     {
         try {
             $departments = Department::all();
-        } catch (\Exception $e) {
+            return response()->json($departments);
+        } catch (Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-        return response()->json($departments, 200);
     }
 }

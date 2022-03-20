@@ -39,7 +39,6 @@ class UpdatePasswordRequest extends ApiFormRequest
         return [
             'current_password.required' => 'Your current password is required',
             'password.required' => 'The new password is required',
-            'password.confirmed' => 'The new password confirm is required',
         ];
     }
 }

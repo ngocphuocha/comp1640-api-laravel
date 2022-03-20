@@ -33,6 +33,18 @@ class IdeaController extends Controller
     }
 
     /**
+     *  Search idea is not hidden
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|void
+     */
+    protected function searchIdea(Request $request)
+    {
+        $ideas = Idea::with(['department', 'category'])->where('is_hidden', '=', false)->where('title', 'like', '%' . $request->query('title') . '%')->paginate(5);
+        $ideas = $ideas->appends(['title' => $request->query('title')]);
+        return $ideas;
+    }
+
+    /**
      * Get all hidden ideas
      *
      * @return \Illuminate\Http\JsonResponse
@@ -50,18 +62,6 @@ class IdeaController extends Controller
             return response()->json($exception->getMessage(), 404);
         }
         return response()->json($ideas, 200);
-    }
-
-    /**
-     *  Search idea is not hidden
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|void
-     */
-    protected function searchIdea(Request $request)
-    {
-        $ideas = Idea::with(['department', 'category'])->where('is_hidden', '=', false)->where('title', 'like', '%' . $request->query('title') . '%')->paginate(5);
-        $ideas = $ideas->appends(['title' => $request->query('title')]);
-        return $ideas;
     }
 
     /**
@@ -127,8 +127,7 @@ class IdeaController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public
-    function likeIdea(Request $request, Idea $idea)
+    public function likeIdea(Request $request, Idea $idea)
     {
         try {
             if ($this->checkLikeIdeaIsExist($idea->id, $request) === false) {

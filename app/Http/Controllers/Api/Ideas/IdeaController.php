@@ -6,82 +6,59 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Idea\UpdateIdeaRequest;
 use App\Models\Idea;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class IdeaController extends Controller
 {
     /**
-     * Display a listing of user
+     * Display a listing of idea
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
             $ideas = Idea::with(['department', 'category'])->where('user_id', '=', $request->user()->id)->paginate(5);
+            return response()->json($ideas);
         } catch (Exception $exception) {
-            return response()->json($exception->getMessage(), $exception->getCode());
+            return response()->json($exception->getMessage(), 500);
         }
-
-        return response()->json($ideas, 200);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function update(UpdateIdeaRequest $request, int $id): \Illuminate\Http\JsonResponse
+    public function update(UpdateIdeaRequest $request, int $id): JsonResponse
     {
         try {
             $idea = DB::table('ideas')->where('id', '=', $id)->first();
 
             if (is_null($idea)) {
-                throw new Exception('Idea not found', Response::HTTP_NOT_FOUND);
+                throw new Exception('Idea not found', 404);
             }
 
             // else then update this idea
             DB::table('ideas')->where('id', '=', $id)->update($request->only(['title', 'content', 'category_id']));
+            return response()->json('Update category success', 202);
         } catch (Exception $exception) {
-            return response()->json($exception->getMessage());
+            return response()->json($exception->getMessage(), 500);
         }
-        return response()->json('Update category success', Response::HTTP_ACCEPTED);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function destroy(int $id): \Illuminate\Http\JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         DB::beginTransaction();
 
@@ -94,13 +71,10 @@ class IdeaController extends Controller
             DB::table('ideas')->delete($id);
 
             DB::commit();
-            // all good
+            return response()->json('Change current password successfully', 200); // all good
         } catch (Exception $exception) {
             DB::rollBack();
-            // Something error
-
-            return response()->json($exception->getMessage(), Response::HTTP_NOT_ACCEPTABLE);
+            return response()->json($exception->getMessage(), 500); // something error
         }
-        return response()->json("Delete idea success", Response::HTTP_ACCEPTED);
     }
 }
