@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Idea;
 use App\Models\IdeaLike;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
 
@@ -78,7 +77,7 @@ class IdeaController extends Controller
 
 
     /**
-     * Display the specified resource.
+     * Get the detail idea
      *
      * @param int $id
      * @return \Illuminate\Http\Response
@@ -87,13 +86,15 @@ class IdeaController extends Controller
     {
         try {
             $idea = Idea::with(['user', 'department'])->where('id', '=', $id)->first();
+
             if (is_null($idea)) {
-                throw new \Exception('Idea not found', Response::HTTP_NOT_FOUND);
+                return response()->json('Idea not found', 404);
             }
+
+            return response()->json($idea);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        return response()->json($idea, Response::HTTP_OK);
     }
 
 
@@ -114,10 +115,10 @@ class IdeaController extends Controller
                 $mpdf->WriteHTML($idea->content);
                 $mpdf->Output($fileName, 'D');
             } else {
-                throw new \Exception('Idea not found', 404);
+                return response()->json('Idea not found', 404);
             }
         } catch (\Exception $exception) {
-            return response()->json($exception->getMessage(), $exception->getCode());
+            return response()->json($exception->getMessage(), 500);
         }
     }
 
@@ -189,7 +190,7 @@ class IdeaController extends Controller
     }
 
     /**
-     * Get total like belong to idea tabls
+     * Get total like of the idea detail
      *
      * @param Idea $idea
      * @return \Illuminate\Http\JsonResponse
@@ -217,9 +218,9 @@ class IdeaController extends Controller
 
         try {
             if ($result === false) {
-                return response()->json(['isExist' => false], Response::HTTP_OK);
+                return response()->json(['isExist' => false]);
             } else {
-                return response()->json(['isExist' => true], Response::HTTP_OK);
+                return response()->json(['isExist' => true]);
             }
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage());

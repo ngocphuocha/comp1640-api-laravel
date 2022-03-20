@@ -1,14 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\Comments\CommentController;
+use App\Http\Controllers\Api\Public\CategoryController;
+use App\Http\Controllers\Api\Public\IdeaController;
 use Illuminate\Support\Facades\Route;
 
 // Categories
-Route::get('/categories', [\App\Http\Controllers\Api\Public\CategoryController::class, 'index']);
-Route::get('categories/{id}', [\App\Http\Controllers\Api\Public\CategoryController::class, 'show']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('categories/{id}', [CategoryController::class, 'show']);
 
 // UserIdeas
 
-Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group(function () {
+Route::controller(IdeaController::class)->group(function () {
     Route::get('/ideas', 'index')->withoutMiddleware('api')->middleware('throttle:global');
     Route::get('/ideas/{id}', 'show');
     Route::get('/ideas/{id}/like/is-exist', 'checkIsExistLike')->middleware(['auth:sanctum']);
@@ -18,7 +21,7 @@ Route::controller(\App\Http\Controllers\Api\Public\IdeaController::class)->group
     Route::delete('/ideas/{idea}/likes', 'unlikeIdea')->middleware(['auth:sanctum']); // delete like idea
 });
 // Comments
-Route::controller(\App\Http\Controllers\Api\Comments\CommentController::class)->group(function () {
+Route::controller(CommentController::class)->group(function () {
     Route::get('/ideas/{idea}/comments', 'index');
     Route::post('/ideas/{idea}/comments', 'store')->middleware(['auth:sanctum']); // post new comment to idea
 });

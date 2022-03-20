@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Idea extends Model
 {
@@ -19,8 +20,9 @@ class Idea extends Model
      */
     protected $casts = [
         'is_hidden' => 'boolean',
-        'is_active'=> 'boolean'
+        'is_active' => 'boolean'
     ];
+
     /**
      * Get the user that owns the idea.
      */
@@ -28,6 +30,7 @@ class Idea extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -49,7 +52,7 @@ class Idea extends Model
     /*
      * Get a department that own a idea
      */
-    public function department()
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }

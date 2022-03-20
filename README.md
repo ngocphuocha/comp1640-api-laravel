@@ -46,7 +46,7 @@ Phone: 0984641362
    `
 7. Run queue job for sending email
 
-   Open another terminal and enter: `php artisan queue:listen`
+   Open another terminal and enter: `php artisan queue:work`
 8. Add ENV Variable into `.env` file for working api request from reactjs
 
    `SESSION_DOMAIN=localhost`
